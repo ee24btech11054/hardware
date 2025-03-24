@@ -1,0 +1,182 @@
+%iffalse
+\let\negmedspace\undefined
+\let\negthickspace\undefined
+\documentclass[a4paper,12pt]{article}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{txfonts}
+\usepackage{listings}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\usepackage{gensymb}
+\usepackage{comment}
+\usepackage[breaklinks=true]{hyperref}
+\usepackage{tkz-euclide} 
+\usepackage{listings}
+\usepackage{gvv}                                        
+%%\def\inputGnumericTable{}                                 
+\usepackage[latin1]{inputenc}                                
+\usepackage{color}                                            
+\usepackage{array}                                            
+\usepackage{longtable}                                       
+\usepackage{calc}                                             
+\usepackage{multirow}                                         
+\usepackage{hhline}                                           
+\usepackage{ifthen}                                           
+\usepackage{lscape}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{float}
+\usepackage{multicol}
+\usepackage{subcaption}
+\usepackage{xcolor}
+\usepackage{siunitx}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{problem}{Problem}
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{example}{Example}[section]
+\newtheorem{definition}[problem]{Definition}
+\newcommand{\BEQA}{\begin{eqnarray}}
+\newcommand{\EEQA}{\end{eqnarray}}
+\newcommand{\define}{\stackrel{\triangle}{=}}
+\theoremstyle{remark}
+\newtheorem{rem}{Remark}
+\usepackage{graphicx}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{listings}
+\lstset{
+    basicstyle=\ttfamily\footnotesize, 
+    breaklines=true,         % Enables line wrapping
+    breakatwhitespace=true,  % Break lines only at spaces
+    columns=fullflexible     % Adjusts spacing to avoid cut-off
+}
+
+
+% Marks the beginning of the document
+
+\bibliographystyle{IEEEtran}
+\vspace{3cm}
+
+
+\title{Scientific Calculator using Arduino UNO and LCD}
+\author{S. Sai Akshita - EE24BTECH11054}
+
+\begin{document}
+
+\maketitle
+
+\renewcommand{\thefigure}{\theenumi}
+\renewcommand{\thetable}{\theenumi}
+
+
+
+\section{Introduction}
+This document provides an in-depth explanation of the Scientific Calculator implemented using an Arduino UNO, a Liquid Crystal Display(LCD), 20+ push buttons, and other required components.
+
+\section{Components Used}
+
+\begin{itemize}
+    \item Arduino - 1  
+    \item Breadboard - 2  
+    \item 16x2 LCD Display (Parallel, 16-pin, Non-I2C)
+    \item USB A to USB B cable - 1  
+    \item OTG adapter - 1  
+    \item Jumper wires (Male-Male) - 50 to 70  
+    \item Potentiometer/Resistors -$\SI{15,000}{\ohm} - 6  $and $\SI{1,000}{\ohm} - 2$ (used in this) 
+    \item Push Buttons - 20 to 25  
+\end{itemize}
+\newpage
+\section{Pin Configuration and Breadboard Connections}
+
+\subsection{LCD pin configuration}
+\input{tables/table1.tex}
+
+
+
+
+\subsection{Push buttons Connections}
+\section{Button Connections for Scientific Calculator}
+
+The following list outlines the button connections for the scientific calculator:
+
+\input{tables/table2.tex}
+
+
+\section{Power Supply Connection and Uploading Code}
+The Arduino UNO is powered via USB from a mobile phone.
+\begin{itemize}
+    \item To compile the code and upload it into arduino UNO, run the command "make" in the directory containing .c file, header file, file containing definitions and Makefile. Then the created .hex file should be uploaded into Arduino UNO. 
+\end{itemize}
+
+\section{Circuit Working Mechanism(Analog to Digital Conversion)}
+Analog-to-Digital Conversion (ADC) is a technique used to convert an analog signal into a digital value that can be processed by a microcontroller.
+\subsection{Advantages of ADC for Button Inputs}
+The use of ADC for button inputs offers several benefits:
+\begin{itemize}
+    \item \textbf{Optimized Resource Utilization:} Reduces the number of required input pins, allowing efficient microcontroller resource management.
+    \item \textbf{Simplified Circuit Design:} Minimizes wiring complexity, thereby improving circuit reliability.
+    \item \textbf{Accurate and Efficient Detection:} Utilizes predefined voltage thresholds to ensure precise button identification.
+\end{itemize}
+
+\subsection{Application in the Scientific Calculator}
+In this project, the ADC technique is used to read multiple buttons through a single analog pin, preserving valuable digital input pins. Arithmetic operations are managed using separate digital pins, while trigonometric functions are accessed using a single button with a scrolling selection mechanism.
+
+
+ 
+
+\section{Advantages of Using AVR-GCC Over C++}
+Using AVR-GCC instead of C++ for implementing the digital clock provides several benefits:
+
+\begin{itemize}
+    \item \textbf{Efficiency:} AVR-GCC generates highly optimized machine code, resulting in faster execution and reduced memory usage.
+    \item \textbf{Precise Timing:} Direct control over hardware registers allows for more accurate timing, crucial for maintaining a stable clock display.
+    \item \textbf{Lower Overhead:} Unlike C++ with its runtime overhead, AVR-GCC offers minimal abstraction, reducing unnecessary processing load.
+    \item \textbf{Fine-Grained Hardware Control:} Allows direct manipulation of registers and ports, ensuring precise control over multiplexing and display updates.
+    \item \textbf{Smaller Code Size:} Since AVR-GCC avoids C++ features like classes and dynamic memory allocation, the compiled code size remains smaller.
+    \item \textbf{Better Debugging:} With direct register access, debugging at the hardware level becomes more transparent compared to C++ abstractions.
+\end{itemize}
+
+
+
+\section{Precautions}
+\subsection{Hardware}
+\begin{itemize}
+    \item \textbf{Proper Power Supply:} Ensure a stable 5V power supply to prevent voltage fluctuations that can damage components.
+    \item \textbf{Secure Connections:} Use firm jumper wire connections to avoid loose connections that may cause erratic behavior.
+    \item \textbf{Resistor Selection:} Choose appropriate resistors, especially for LCD contrast adjustment and button input voltage dividers.
+    \item \textbf{Debouncing Buttons:} Use pull-down or pull-up resistors to prevent unintended multiple inputs due to switch bouncing.
+    \item \textbf{Proper LCD Handling:} Avoid excessive pressure on the LCD screen and ensure correct pin connections to prevent damage.
+    \item \textbf{Short Circuit Prevention:} Double-check wiring to avoid accidental short circuits, especially on a breadboard.
+    \item \textbf{Heat Dissipation:} Ensure that components, especially the Arduino, do not overheat due to excessive current draw.
+    \item \textbf{Correct Pin Assignments:} Verify connections between buttons, LCD, and microcontroller to avoid miswiring.
+    \item \textbf{Static Protection:} Handle microcontroller and ICs with care to prevent static discharge damage.
+    \item \textbf{Proper Grounding:} Ensure a common ground for all components to avoid floating voltage issues.
+\end{itemize}
+\subsection{Software}
+\begin{itemize}
+    \item \textbf{Efficient Code Optimization:} Keep the AVR-GCC code optimized to avoid unnecessary delays in button response.
+    \item \textbf{Debounce Logic in Software:} Implement software-based debounce techniques to prevent unintended button presses.
+    \item \textbf{Memory Management:} Avoid excessive memory usage to prevent crashes or unexpected behavior.
+    \item \textbf{Error Handling:} Implement proper error detection and handling in calculations to prevent incorrect results.
+     \item \textbf{Avoid Infinite Loops:} Ensure that the program does not get stuck in infinite loops due to misconfigured logic.
+    \item \textbf{Correct Timing Functions:} Use appropriate delay functions for LCD updates without affecting button responsiveness.
+    \item \textbf{Power Efficiency:} Optimize code to minimize power consumption, especially if using battery power.
+    \item \textbf{Proper LCD Commands:} Use the correct initialization commands for the LCD to prevent display glitches.
+    \item \textbf{Testing in Stages:} Test each component separately (LCD, buttons, arithmetic operations) before full integration.
+    \item \textbf{Backup Code:} Always keep a backup of your working code before making major modifications.
+\end{itemize}
+
+
+\end{document}
+
+
+
+
