@@ -93,6 +93,15 @@ This document provides an in-depth explanation of the Scientific Calculator impl
     \item Potentiometer/Resistors -$\SI{15,000}{\ohm} - 6  $and $\SI{1,000}{\ohm} - 2$ (used in this) 
     \item Push Buttons - 20 to 25  
 \end{itemize}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\columnwidth]{figs/fig1.jpeg} % Adjust the path
+    \caption{Scientific Calculator Setup}
+    \label{fig:example}
+\end{figure}
+
+
 \newpage
 \section{Pin Configuration and Breadboard Connections}
 
@@ -101,15 +110,13 @@ This document provides an in-depth explanation of the Scientific Calculator impl
 
 
 
-
-\subsection{Push buttons Connections}
 \section{Button Connections for Scientific Calculator}
 
 The following list outlines the button connections for the scientific calculator:
 
 \input{tables/table2.tex}
 
-
+\newpage
 \section{Power Supply Connection and Uploading Code}
 The Arduino UNO is powered via USB from a mobile phone.
 \begin{itemize}
@@ -118,6 +125,37 @@ The Arduino UNO is powered via USB from a mobile phone.
 
 \section{Circuit Working Mechanism(Analog to Digital Conversion)}
 Analog-to-Digital Conversion (ADC) is a technique used to convert an analog signal into a digital value that can be processed by a microcontroller.
+\subsection{ADC Fundamentals}
+The ATmega328P's 10-bit ADC converts analog voltages (0-5V) to digital values (0-1023). Key characteristics include:
+\begin{itemize}
+    \item 10-bit resolution (1024 discrete values)
+    \item 9-260$\mu$s conversion time (depending on clock prescaler)
+    \item 8 multiplexed input channels (A0-A7)
+\end{itemize}
+
+\subsection{Implementation in Calculator}
+\begin{itemize}
+    \item \textbf{Button Matrix:}
+    \begin{itemize}
+        \item Digit buttons 0-9 connected via voltage divider to A0
+        \item Each button produces a unique voltage level (e.g., Button1=0.5V, Button2=1.0V,...,Button9=4.5V,Button10=5V)
+    \end{itemize}
+    
+    \item \textbf{Configuration:}
+    \begin{itemize}
+        \item Reference voltage: 5V
+        \item Prescaler: 128 (ADC clock = 125kHz)
+        \item Channel selection: ADC0 (A0 pin)
+    \end{itemize}
+
+    \item \textbf{Reading Process:}
+    \begin{itemize}
+        \item Single conversion initiated via ADSC bit
+        \item \texttt{Conversion complete} flag (ADIF) checked for completion
+        \item Result read from ADC/ADCL registers
+    \end{itemize}
+\end{itemize}
+
 \subsection{Advantages of ADC for Button Inputs}
 The use of ADC for button inputs offers several benefits:
 \begin{itemize}
@@ -126,8 +164,74 @@ The use of ADC for button inputs offers several benefits:
     \item \textbf{Accurate and Efficient Detection:} Utilizes predefined voltage thresholds to ensure precise button identification.
 \end{itemize}
 
+
 \subsection{Application in the Scientific Calculator}
 In this project, the ADC technique is used to read multiple buttons through a single analog pin, preserving valuable digital input pins. Arithmetic operations are managed using separate digital pins, while trigonometric functions are accessed using a single button with a scrolling selection mechanism.
+
+
+\section{Mechanism of Codes}
+
+The main.c program is located in the directory named \texttt{codes}.  
+Below is an overview of the essential functions used in the implementation:
+
+\subsection{Core Mathematical Functions}
+\subsubsection{Angle Conversion and Reduction}
+\begin{itemize}
+    \item \texttt{double reduce\_angle(double rad)}: Adjusts any angle to the range $\sbrak{0, 2\pi}$ by eliminating full rotations.  
+    \item \texttt{double deg2rad(double deg)}: Converts degrees into radians using the formula $rad = deg \times \frac{\pi}{180}$.  
+\end{itemize}
+
+\subsubsection{Natural Logarithm Calculation}
+\begin{itemize}
+    \item \texttt{double compute\_ln(double x)}: Computes the natural logarithm by numerically integrating $\int_1^x \frac{1}{t} dt$ using the trapezoidal rule.  
+\end{itemize}
+
+\subsubsection{Numerical Methods}
+\begin{itemize}
+    \item \texttt{double tangent\_rk4(double radians, double h)}: Determines the tangent using the 4th-order Runge-Kutta method by solving the differential equation $\frac{dy}{dx} = -y$.
+    \item \texttt{double power(double x, double n)}: Computes $x^n$ using Euler's method for the differential equation $\frac{dy}{dx} = n \cdot y$.  
+\end{itemize}
+
+\subsection{Stack Operations}
+\subsubsection{Operator Stack}
+\begin{itemize}
+    \item \texttt{void initStack(Stack *s)}: Initializes the operator stack.  
+    \item \texttt{void push(Stack *s, const char* val)}: Adds an operator to the stack.  
+    \item \texttt{const char* peek(Stack *s)}: Retrieves the top element without removing it.  
+\end{itemize}
+
+\subsubsection{Number Stack}
+\begin{itemize}
+    \item \texttt{void initNumStack(NumStack *s)}: Initializes the number stack.  
+    \item \texttt{void pushNum(NumStack *s, float val)}: Pushes a number onto the stack.  
+    \item \texttt{float popNum(NumStack *s)}: Removes and returns the top number from the stack.  
+\end{itemize}
+
+\subsection{Expression Processing}
+\subsubsection{Infix to Postfix Conversion}
+\begin{itemize}
+    \item \texttt{void infixToPostfix(const char* infix, char* postfix)}: Converts an expression from standard mathematical notation to Reverse Polish Notation using Dijkstra's shunting-yard algorithm.  
+    \item This function handles:
+    \begin{itemize}
+        \item Parentheses grouping  
+        \item Operator precedence (PEMDAS rules)  
+        \item Special functions such as \texttt{trig} and \texttt{log}  
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Postfix Evaluation}
+\begin{itemize}
+    \item \texttt{float evaluatePostfix(const char* postfix)}: Evaluates expressions written in Reverse Polish Notation using a number stack.  
+    \item It supports:
+    \begin{itemize}
+        \item Basic arithmetic operations $(+, -, \times, \div)$  
+        \item Exponentiation $(x^y)$  
+        \item Trigonometric functions $(\sin, \cos, \tan)$  
+        \item Logarithmic functions $(\ln, \log_{10})$  
+    \end{itemize}
+\end{itemize}
+
+
 
 
  
